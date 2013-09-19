@@ -1,0 +1,206 @@
+## v0.2 format
+##
+##  NB:
+##   * ensure all X_file and X_dir settings are absolute paths with exactly one leading "${_d}" and with no trailing "${_d}" (e.g. "${_d}ixp" or "${_d}")
+##   * ensure all X_url settings have no trailing "/"
+##   * Normal shell expansion will work as will use of these pre-defined vars:
+##       ${_d}    => e.g. '/'
+##       ${_e}    => e.g. [\n]
+##       ${_null} => e.g. '/dev/null'
+##   * Config file sequence is based on default values. If you change a setting from an independent one to a dependent one (or even just change a
+##     dependent one) be careful to change the order so the variables it references are defined before it).
+
+#### Independent settings (the defaults don't require other variables to already exist - order doesn't matter) ####
+#
+
+## Probably don't require editing ##
+#
+etc_dir="${_d}etc"
+var_dir="${_d}var"
+opt_dir="${_d}opt"
+usr_dir="${_d}usr"
+import_dir=~
+auth_hash='bcrypt'
+auth_hash_cost='9'
+sflowtool_version='3.28'
+sflowtool_sha512='ba05ef9f67b39b70b69c4d1448c6bd71dae77e1f1c39b84e2ed3ad98ca95b40874fff3d045218d0926a101666f0381e4df7fe42719e4f9fc31c1e93da6b05a6c'
+sflowtool_cflags='-O3 -pipe -fomit-frame-pointer -static'
+sflowtool_cppflags='-static'
+sflowtool_ldflags='-static'
+locale_encoding='utf8'
+primary_infra_name='Primary Infrastructure'
+cron_timedef_periodic_update='7 0,4,8,12,16,20 * * *'
+cron_timedef_store_traffic='0 2 * * *'
+cron_timedef_poll_switch='0,10,20,30,40,50 * * * *'
+id_switch_domain='' # appended to switch names to get FQDN (leave blank if names are FQDNs)
+site_ip_v4='' # derived from $site_domain by DNS if empty
+site_ip_v6='' # derived from $site_domain by DNS if empty
+smokeping_image_url="/smokeping/images"
+site_redirect_non_https='yes' # 'yes' means redirect http://xx/ixp-base-dir -> https://xx/ixp-base-dir if $site_proto = https
+
+## May require editing ##
+#
+repo_name='ixpmanager'
+site_base_url='/ixp' # ensure exactly one leading '/'
+site_proto='https' # http or https
+repo_branch='production'
+id_name_suffix='NOC'
+
+## Require editing ##
+#
+ixp_shortname='XXX'
+ixp_longname='XXX'
+ixp_address_1='XXX'
+ixp_address_2='XXX'
+ixp_city='XXX'
+ixp_postcode='XXX'
+ixp_country='XXX'
+ixp_region='XXX'
+ixp_countrycode='XXX'
+ixp_asn='XXX'
+locale_lang='XXX'
+primary_switch_ip='XXX/32'
+site_source_ips='127.0.0.1/32 ::/64 XXX' # (space-separated IPs granted access e.g. "8.8.8.8 1.1.1.1 dead:beef::" - blank means world-viewable site)
+mail_extra_recipient_1='XXX'
+db_name='XXX'
+db_user='XXX'
+db_pass='XXX'
+mailer_user='XXX'
+mailer_pass='XXX'
+mailer_auth='XXX'
+id_irc_pass='XXX'
+peering_matrix_0_num='XXX'
+peering_matrix_1_num='XXX'
+max_prefixes='XXX'
+noc_phone='XXX'
+noc_24h_phone='XXX'
+noc_fax='XXX'
+reg_company_number='XXX'
+contact_name='XXX'
+contact_position='XXX'
+contact_phone='XXX'
+contact_phone_mob='XXX'
+git_user='XXX'
+sflowtool_port='XXX'
+
+#### Dependent settings (the defaults require other variables to already exist - order matters) ####
+#
+
+## Probably don't require editing ##
+#
+init_dir="${etc_dir}${_d}init.d"
+cron_dir="${etc_dir}${_d}cron.d"
+run_dir="${var_dir}${_d}run"
+web_dir="${var_dir}${_d}www"
+log_dir="${var_dir}${_d}log"
+external_images_base_dir="${_ds}static${_d}images" # (leave blank if not needed)
+external_images_dir="$(test -z "$external_images_base_dir" || printf %s%s "$web_dir" "$external_images_base_dir")"
+varcache_dir="${var_dir}${_d}cache"
+varlib_dir="${var_dir}${_d}lib"
+custom_base_dir="${usr_dir}${_d}local"
+ixp_shortname_lc="$(printf %s "$ixp_shortname" | tr '[A-Z]' '[a-z]')"
+ixp_abbrevname="$(printf %s "$ixp_shortname" | tr -d '-')"
+ixp_abbrevname_lc="$(printf %s "$ixp_abbrevname" | tr '[A-Z]' '[a-z]')"
+ixp_countrycode_lc="$(printf %s "$ixp_countrycode" | tr '[A-Z]' '[a-z]')"
+id_name_suffix_lc="$(printf %s "$id_name_suffix" | tr '[A-Z]' '[a-z]')"
+id_orgname="$ixp_shortname"
+id_countrycode="$ixp_countrycode"
+site_log_dir="${log_dir}${_d}$repo_name"
+site_cache_dir="${varcache_dir}${_d}$repo_name"
+site_base_url_fs="$(printf %s "${site_base_url}" | tr '/' "${_d}")"
+site_base_dir="${web_dir}$(test / = "${site_base_url_fs}" || printf %s "${site_base_url_fs}")"
+site_domain="${ixp_shortname_lc}.$ixp_countrycode_lc"
+site_name="www.$site_domain"
+site_url="${site_proto}://$site_name"
+noc_www="$site_url"
+noc_corp_www="$site_url"
+locale_code="${locale_lang}_${ixp_countrycode}.$locale_encoding"
+locale_timezone="${ixp_region}/$ixp_city"
+logger_email_from="$ixp_email"
+id_mailer_name="$id_orgname Mailer"
+id_mailer_email="do-not-reply@$site_domain"
+id_sitename="$id_orgname IXP Manager"
+id_url="${site_url}$site_base_url"
+mrtg_data_dir="${lib_dir}${_d}mrtg"
+mrtg_p2p_path="${site_url}/sflow/sflow-graph.php"
+mrtg_config_dir="${etc_dir}${_d}mrtg"
+mrtg_config_file="${mrtg_config_dir}${_d}mrtg.cfg"
+smokeping_data_dir="${lib_dir}${_d}smokeping"
+smokeping_config_dir="${etc_dir}${_d}smokeping"
+smokeping_config_file="${smokeping_config_dir}${_d}config"
+smokeping_cgi_url="${site_base_url}/smokeping/smokeping.cgi"
+smokeping_image_cache_dir="${cache_dir}${_d}smokeping${_d}images"
+smokeping_pid_dir="${run_dir}/smokeping"
+smokeping_setup_mail_file="${smokeping_config_dir}${_d}smokemail"
+smokeping_report_mail_file="${smokeping_config_dir}${_d}tmail"
+rrdcached_sock_dir="${run_dir}"
+rrdcached_sock="unix:${rrdcached_sock_dir}${_d}rrdcached.sock"
+traffic_differentials_name="$id_name"
+traffic_differentials_subject="$id_orgname Traffic Differentials"
+traffic_differentials_recipient_extra="$mail_extra_recipient_1"
+port_utilisation_name="$id_name"
+port_utilisation_subject="$id_orgname Port Utilisation Report"
+port_utilisation_recipient_extra="$mail_extra_recipient_1"
+ports_with_counts_name="$id_name"
+ports_with_counts_subject="$id_orgname - Ports with %s"
+ports_with_counts_recipient_extra="$mail_extra_recipient_1"
+rsvp_email="rsvp@$site_domain"
+rsvp_name="RSVP at $id_orgname"
+peering_macro="AS-$ixp_abbrevname"
+peering_macro_v6="$peering_macro"
+reg_name="$ixp_longname"
+reg_jurisdiction="$ixp_country"
+reg_address_1="$ixp_address_1$(test -z "$ixp_address_2" || printf ', %s' "$ixp_address_2")"
+reg_city="$ixp_city"
+reg_postcode="$ixp_postcode"
+reg_countrycode="$ixp_countrycode"
+billing_address_1="$ixp_address_1"
+billing_address_2="$ixp_address_2"
+billing_city="$ixp_city"
+billing_postcode="$ixp_postcode"
+billing_countrycode="$ixp_countrycode"
+base_dir="${opt_dir}"
+repo_dir="${base_dir}${_d}$repo_name"
+skin_name="$ixp_abbrevname_lc"
+installer_database_file="${import_dir}${_d}${repo_name}_${skin_name}_database.sql"
+installer_skin_file="${import_dir}${_d}${repo_name}_${skin_name}_skin.tar"
+installer_misc_file="${import_dir}${_d}${repo_name}_${skin_name}_misc.tar"
+installer_images_file="${import_dir}${_d}${repo_name}_${skin_name}_images.tar"
+mrtg_pid_dir="${run_dir}"
+custom_scripts_dir="${usrlocal_dir}${_d}bin"
+custom_src_dir="${usrlocal_dir}${_d}src"
+rrdcached_data_dir="${lib_dir}${_d}rrdcached"
+rrdcached_config_file="${etc_dir}${_d}default${_d}rrdcached"
+sflowtool_opts="-4 -p ${sflowtool_port} -l"
+sflow_pid_dir="${run_dir}"
+id_name="$id_orgname $id_name_suffix"
+id_autobot_name="$id_name Autobot"
+id_autobot_email="${id_name_suffix_lc}-auto@$site_domain"
+id_logo_file="$(if test -n "$external_images_dir"; then printf %s "$external_images_dir"; else printf %s "${web_dir}${_d}static${_d}images"; fi)${_d}${ixp_abbrevname_lc}-logo-small.png"
+id_biglogo_file="$(if test -n "$external_images_dir"; then printf %s "$external_images_dir"; else printf %s "${web_dir}${_d}static${_d}images"; fi)${_d}${ixp_abbrevname_lc}-logo-big.jpg"
+firewall_config_file="${etc_dir}/ferm/ferm.conf"
+
+## May require editing ##
+#
+mailer_host="mail.$site_domain"
+noc_email="${id_name_suffix_lc}@$site_domain"
+ixp_email="$noc_email"
+contact_email="$ixp_email"
+id_email="$ixp_email"
+peering_email="$id_email"
+site_email="$noc_email"
+logger_email_to="$noc_email"
+traffic_differentials_email="$id_email"
+traffic_differentials_recipient="$id_email"
+port_utilisation_email="$id_email"
+port_utilisation_recipient="$id_email"
+ports_with_counts_email="$id_email"
+ports_with_counts_recipient="$id_email"
+sflow_rrd_dir="${lib_dir}${_d}flows${_d}RRDs"
+primary_switch_name="switch.${site_domain}"
+
+## Require editing ##
+#
+site_aliases="$site_domain XXX" # space separated list
+peering_matrix_0_name="Public Peering LAN - $ixp_shortname"
+peering_matrix_1_name="Public Peering LAN - $ixp_shortname Services"
