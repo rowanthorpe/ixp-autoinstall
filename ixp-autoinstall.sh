@@ -1,5 +1,28 @@
 #!/bin/sh
 
+# Copyright (C) 2013 Rowan Thorpe
+# All Rights Reserved.
+#
+# This file is part of ixp-autoinstall.
+#
+# ixp-autoinstall is free software: you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by the Free
+# Software Foundation, version v2.0 of the License.
+#
+# ixp-autoinstall is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+# more details.
+#
+# You should have received a copy of the GNU General Public License v2.0
+# along with ixp-autoinstall. If not, see:
+#
+# http://www.gnu.org/licenses/gpl-2.0.html
+#
+# ixp-autoinstall is for automating the install/update process for INEX's
+# IXP-Manager - https://github.com/inex/IXP-Manager
+# It initially derived heavily from the manual install instructions provided there.
+
 ## IXP-Manager auto-installer
 ##
 ## v0.2 (tested OK with IXP-Manager git master HEAD at 29/08/2013 23:00)
