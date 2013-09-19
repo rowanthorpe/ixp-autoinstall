@@ -1,0 +1,9 @@
+This is the official BIG FAT WARNING:
+=====================================
+
+This is still highly experimental and should only be tried on bare VMs (or
+fully backed-up systems that can afford a few hours offline to restore if
+necessary) for now. Expect it to shred your system. It probably won't but I'm
+not ready to bet money on it just yet. What it does is highly invasive by
+nature so I will only remove this big fat warning after it has solidly proven
+itself for a while...

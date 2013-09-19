@@ -1,17 +1,21 @@
 ## v0.2 format
 ##
 ##  NB:
-##   * ensure all X_file and X_dir settings are absolute paths with exactly one leading "${_d}" and with no trailing "${_d}" (e.g. "${_d}ixp" or "${_d}")
-##   * ensure all X_url settings have no trailing "/"
 ##   * Normal shell expansion will work as will use of these pre-defined vars:
 ##       ${_d}    => e.g. '/'
 ##       ${_e}    => e.g. [\n]
 ##       ${_null} => e.g. '/dev/null'
-##   * Config file sequence is based on default values. If you change a setting from an independent one to a dependent one (or even just change a
-##     dependent one) be careful to change the order so the variables it references are defined before it).
+##   * ensure all X_file and X_dir settings are absolute paths with exactly
+##     one leading "${_d}" and with no trailing "${_d}" (e.g. "${_d}ixp" or
+##     "${_d}")
+##   * ensure all X_url settings have no trailing "${_d}"
+##   * Config vars' sequence is based on default values. If you change a
+##     setting from an independent one to a dependent one (or even just change
+##     a dependent one) be careful to change the order so the variables it
+##     references are defined before it).
 
-#### Independent settings (the defaults don't require other variables to already exist - order doesn't matter) ####
-#
+#### Independent settings (the defaults don't require other variables to
+#### already exist - order doesn't matter)
 
 ## Probably don't require editing ##
 #
@@ -37,6 +41,8 @@ site_ip_v4='' # derived from $site_domain by DNS if empty
 site_ip_v6='' # derived from $site_domain by DNS if empty
 smokeping_image_url="/smokeping/images"
 site_redirect_non_https='yes' # 'yes' means redirect http://xx/ixp-base-dir -> https://xx/ixp-base-dir if $site_proto = https
+mrtg_infra1_aggregate_name="aggregate"
+mrtg_ixp1_aggregate_name="" # leave blank if not sure
 
 ## May require editing ##
 #
@@ -83,8 +89,8 @@ contact_phone_mob='XXX'
 git_user='XXX'
 sflowtool_port='XXX'
 
-#### Dependent settings (the defaults require other variables to already exist - order matters) ####
-#
+#### Dependent settings (the defaults require other variables to already exist
+#### - order matters)
 
 ## Probably don't require editing ##
 #
@@ -93,10 +99,10 @@ cron_dir="${etc_dir}${_d}cron.d"
 run_dir="${var_dir}${_d}run"
 web_dir="${var_dir}${_d}www"
 log_dir="${var_dir}${_d}log"
-external_images_base_dir="${_ds}static${_d}images" # (leave blank if not needed)
-external_images_dir="$(test -z "$external_images_base_dir" || printf %s%s "$web_dir" "$external_images_base_dir")"
 varcache_dir="${var_dir}${_d}cache"
 varlib_dir="${var_dir}${_d}lib"
+external_images_base_dir="${_d}static${_d}img" # (leave blank if not needed)
+external_images_dir="$(test -z "$external_images_base_dir" || printf %s%s "$web_dir" "$external_images_base_dir")"
 custom_base_dir="${usr_dir}${_d}local"
 ixp_shortname_lc="$(printf %s "$ixp_shortname" | tr '[A-Z]' '[a-z]')"
 ixp_abbrevname="$(printf %s "$ixp_shortname" | tr -d '-')"
@@ -104,6 +110,7 @@ ixp_abbrevname_lc="$(printf %s "$ixp_abbrevname" | tr '[A-Z]' '[a-z]')"
 ixp_countrycode_lc="$(printf %s "$ixp_countrycode" | tr '[A-Z]' '[a-z]')"
 id_name_suffix_lc="$(printf %s "$id_name_suffix" | tr '[A-Z]' '[a-z]')"
 id_orgname="$ixp_shortname"
+id_name="$id_orgname $id_name_suffix"
 id_countrycode="$ixp_countrycode"
 site_log_dir="${log_dir}${_d}$repo_name"
 site_cache_dir="${varcache_dir}${_d}$repo_name"
@@ -116,20 +123,19 @@ noc_www="$site_url"
 noc_corp_www="$site_url"
 locale_code="${locale_lang}_${ixp_countrycode}.$locale_encoding"
 locale_timezone="${ixp_region}/$ixp_city"
-logger_email_from="$ixp_email"
 id_mailer_name="$id_orgname Mailer"
 id_mailer_email="do-not-reply@$site_domain"
 id_sitename="$id_orgname IXP Manager"
 id_url="${site_url}$site_base_url"
-mrtg_data_dir="${lib_dir}${_d}mrtg"
+mrtg_data_dir="${varlib_dir}${_d}mrtg"
 mrtg_p2p_path="${site_url}/sflow/sflow-graph.php"
 mrtg_config_dir="${etc_dir}${_d}mrtg"
 mrtg_config_file="${mrtg_config_dir}${_d}mrtg.cfg"
-smokeping_data_dir="${lib_dir}${_d}smokeping"
+smokeping_data_dir="${varlib_dir}${_d}smokeping"
 smokeping_config_dir="${etc_dir}${_d}smokeping"
 smokeping_config_file="${smokeping_config_dir}${_d}config"
 smokeping_cgi_url="${site_base_url}/smokeping/smokeping.cgi"
-smokeping_image_cache_dir="${cache_dir}${_d}smokeping${_d}images"
+smokeping_image_cache_dir="${varcache_dir}${_d}smokeping${_d}images"
 smokeping_pid_dir="${run_dir}/smokeping"
 smokeping_setup_mail_file="${smokeping_config_dir}${_d}smokemail"
 smokeping_report_mail_file="${smokeping_config_dir}${_d}tmail"
@@ -166,18 +172,22 @@ installer_database_file="${import_dir}${_d}${repo_name}_${skin_name}_database.sq
 installer_skin_file="${import_dir}${_d}${repo_name}_${skin_name}_skin.tar"
 installer_misc_file="${import_dir}${_d}${repo_name}_${skin_name}_misc.tar"
 installer_images_file="${import_dir}${_d}${repo_name}_${skin_name}_images.tar"
+installer_mrtg_file="${import_dir}${_d}${repo_name}_${skin_name}_mrtg.tar"
+installer_sflow_file="${import_dir}${_d}${repo_name}_${skin_name}_sflow.tar"
+installer_smokeping_file="${import_dir}${_d}${repo_name}_${skin_name}_smokeping.tar"
+installer_smokeping_images_file="${import_dir}${_d}${repo_name}_${skin_name}_smokeping_images.tar"
 mrtg_pid_dir="${run_dir}"
-custom_scripts_dir="${usrlocal_dir}${_d}bin"
-custom_src_dir="${usrlocal_dir}${_d}src"
-rrdcached_data_dir="${lib_dir}${_d}rrdcached"
+mrtg_lock_dir="${run_dir}${_d}lock${_d}mrtg"
+custom_scripts_dir="${custom_base_dir}${_d}bin"
+custom_src_dir="${custom_base_dir}${_d}src"
+rrdcached_data_dir="${varlib_dir}${_d}rrdcached"
 rrdcached_config_file="${etc_dir}${_d}default${_d}rrdcached"
 sflowtool_opts="-4 -p ${sflowtool_port} -l"
 sflow_pid_dir="${run_dir}"
-id_name="$id_orgname $id_name_suffix"
 id_autobot_name="$id_name Autobot"
 id_autobot_email="${id_name_suffix_lc}-auto@$site_domain"
-id_logo_file="$(if test -n "$external_images_dir"; then printf %s "$external_images_dir"; else printf %s "${web_dir}${_d}static${_d}images"; fi)${_d}${ixp_abbrevname_lc}-logo-small.png"
-id_biglogo_file="$(if test -n "$external_images_dir"; then printf %s "$external_images_dir"; else printf %s "${web_dir}${_d}static${_d}images"; fi)${_d}${ixp_abbrevname_lc}-logo-big.jpg"
+id_logo_file="$(if test -n "$external_images_base_dir"; then printf %s "$external_images_base_dir"; else printf %s "${_d}static${_d}images"; fi)${_d}${ixp_abbrevname_lc}-logo-small.png"
+id_biglogo_file="$(if test -n "$external_images_base_dir"; then printf %s "$external_images_base_dir"; else printf %s "${_d}static${_d}images"; fi)${_d}${ixp_abbrevname_lc}-logo-big.jpg"
 firewall_config_file="${etc_dir}/ferm/ferm.conf"
 
 ## May require editing ##
@@ -185,6 +195,7 @@ firewall_config_file="${etc_dir}/ferm/ferm.conf"
 mailer_host="mail.$site_domain"
 noc_email="${id_name_suffix_lc}@$site_domain"
 ixp_email="$noc_email"
+logger_email_from="$ixp_email"
 contact_email="$ixp_email"
 id_email="$ixp_email"
 peering_email="$id_email"
@@ -196,7 +207,7 @@ port_utilisation_email="$id_email"
 port_utilisation_recipient="$id_email"
 ports_with_counts_email="$id_email"
 ports_with_counts_recipient="$id_email"
-sflow_rrd_dir="${lib_dir}${_d}flows${_d}RRDs"
+sflow_rrd_dir="${varlib_dir}${_d}flows${_d}RRDs"
 primary_switch_name="switch.${site_domain}"
 
 ## Require editing ##

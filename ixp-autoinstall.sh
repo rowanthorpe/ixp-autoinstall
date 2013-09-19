@@ -23,7 +23,8 @@
 ##    + with a single switch
 ##    + with direct peerings (no route server)
 ##    + with IXPManager, mysql, sflow, mrtg, etc all hosted on the same server
-##    + with a few other small restrictions I can't remember...
+##    + with a few other small restrictions I can't remember
+##    ...obviously the intention is to reduce these restrictions in time...
 ##
 ##  * Great effort has been made to ensure each iteration of this script is as
 ##    "forwards-compatible" with future versions of IXP-Manager as possible,
@@ -31,7 +32,7 @@
 ##    etc), and there should be some degree of backwards-compatibility too, but
 ##    due to complexity there is never a guarantee. The version line at the top
 ##    of this script will always state which version of IXP-Manager it was last
-##    officially tested with.
+##    officially tested against.
 ##
 ##  * This script should be intelligent enough to e.g. install into '/ixp' on a
 ##    running server with the old site running at '/' (it non-destructively
@@ -41,66 +42,68 @@
 ##
 ######
 ##
-## Example usage on typical VPS service (Debian Wheezy image):
+## Example usage on typical VPS (bare Debian Wheezy image):
 ##
+##  ++ {in a local terminal}
 ##  * cp ixp-autoinstall_conf.sh.dist ixp-autoinstall_conf.sh
 ##  * vi ixp-autoinstall_conf.sh {edit settings to your needs}
-##  * {login to VM through VNC or similar}
+##  ++ {login to the VM through VNC or similar}
 ##  * passwd {and set root password}
 ##  * vi /etc/locale.gen {uncomment your desired locale if necessary}
 ##  * locale-gen
 ##  * aptitude update
-##  * aptitude {ensure openssh-server is installed and running, and resolve any
-##              broken deps or other inconsistencies if necessary}
+##  * aptitude {ensure openssh-server is installed and running, and resolve
+##              any broken deps or other inconsistencies if necessary}
 ##  * logout
-##  * {now from a normal terminal}
+##  ++ {now in local terminal again}
 ##  * scp ~/.ssh/id_rsa.pub root@{VM-IP-ADDRESS}:/root/.ssh/authorized_keys
 ##  * scp \
 ##     {PATH-TO}/ixp-autoinstall/* {PATH-TO}/ixpmanager_{ixpshortname}_*.{sql,tar} \
 ##     root@{VM-IP-ADDRESS}:/{IMPORTING_DIR_SPECIFIED_IN_CONFIG}
 ##  * ssh root@{VM-IP-ADDRESS}
 ##  * ./ixp-autoinstall.sh
-##  * {you will have to enter mysql root password a couple of times - this is
-##     unavoidable for security's sake for now}
+##  * {you either have to enter mysql root password manually a few times - or
+##     have no mysql root password during install - this is unavoidable for
+##     security's sake for now}
 ##
 ######
 ##
 ## Motivations:
 ##
-##  * my employer still needed to track latest versions of IXP-Manager as they
-##    hadn't yet included some vital parts which they were waiting for (e.g.
-##    peer-matrix was still non-functional because according to INEX it was
-##    still missing some code due to their in-house code not being portable
-##    enough to release yet) - so "stable version" still meant "broken version"
-##    for us
-##
-##  * INEX were still changing the code extremely fast, and especially adding
-##    features which occasionally made stability an issue we had to keep a
-##    close eye on
-##
-##  * I structured the installer's config file to minimise how much actual text
-##    needed to be edited/updated, etc
+##  * My employer still needed to track latest versions of IXP-Manager as
+##    releases development code didn't yet include some vital functionality
+##    which they were waiting/hoping for (e.g. peering-matrix was still
+##    non-functional due to unreleased code) so "stable version" still meant
+##    "broken version" for us.
 ##
 ##  * I wanted to make migration and use of puppet, etc a much more realistic
-##    option for us
+##    option for us.
 ##
-##  * it would make a useful point-of-reference for the INEX team to speed up
+##  * The development code was still changing very rapidly and we had to keep a
+##    close eye on stability (avoiding opportunities for user error on repeat
+##    installs/updates).
+##
+##  * I structured the installer's config file to minimise how much actual text
+##    needed to be edited/updated, etc.
+##
+##  * It would make a useful point-of-reference for the INEX team to speed up
 ##    their attempts to make the install process more automated internally and
-##    less arduous for the user - so that as they improve IXP-Manager's install
-##    process this installer should be able to become much less complex
+##    less arduous for the user. As they improve IXP-Manager's install process
+##    this installer should be able to become much less complex.
 ##
 ##  * I used base POSIX shell script syntax (no bashisms, etc) for both the
 ##    installer and its config for maximum portability (even using
 ##    variable-substitution for directory-separators, EOLs and null-devices so
 ##    it should be relatively platform agnostic for filesystem operations too -
-##    e.g. Windows, etc - if IXP-Manager ever tries to handle that...). I
-##    encapsulated system-specific code in case statements for easy addition.
+##    e.g. Windows, etc - if IXP-Manager ever decides to go down that road...).
+##    I encapsulated system-specific code in case statements for easy addition
+##    of platforms.
 ##
 ######
 ##
 ## TODO:
 ##
-##  * remove the above restrictions
+##  * remove the restrictions mentioned in the "NB" above
 ##  * copy across other mrtg init tweaks from old VM
 ##  * add download-php-bcrypt-encrypt fixtures password step (so it can be set
 ##    in the config)
@@ -109,8 +112,6 @@
 ##    done for server-aliases in $sed_webserver_tweaks)
 ##  * securely(?) automate all presently interactive requests for root password
 ##  * find a less crude way to kill default cron-run mrtg (pgrep the args too?)
-##  * check if php5-snmp is really needed (added as runtime-dep for now just in
-##    case)
 ##  * check if views need to be rebuilt when skin has been unarchived (added for
 ##    now just in case)
 ##  * confirm and add more OK platforms to sed_i and mkdir_p
