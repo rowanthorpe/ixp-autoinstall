@@ -3,23 +3,23 @@
 # Copyright (C) 2013 Rowan Thorpe
 # All Rights Reserved.
 #
-# This file is part of ixp-autoinstall.
+# This file is part of ixpm-autoinstall.
 #
-# ixp-autoinstall is free software: you can redistribute it and/or modify it
+# ixpm-autoinstall is free software: you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by the Free
 # Software Foundation, version v2.0 of the License.
 #
-# ixp-autoinstall is distributed in the hope that it will be useful, but WITHOUT
+# ixpm-autoinstall is distributed in the hope that it will be useful, but WITHOUT
 # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
 # more details.
 #
 # You should have received a copy of the GNU General Public License v2.0
-# along with ixp-autoinstall. If not, see:
+# along with ixpm-autoinstall. If not, see:
 #
 # http://www.gnu.org/licenses/gpl-2.0.html
 #
-# ixp-autoinstall is for automating the install/update process for INEX's
+# ixpm-autoinstall is for automating the install/update process for INEX's
 # IXP-Manager - https://github.com/inex/IXP-Manager
 # It initially derived heavily from the manual install instructions provided there.
 
@@ -68,8 +68,8 @@
 ## Example usage on typical VPS (bare Debian Wheezy image):
 ##
 ##  ++ {in a local terminal}
-##  * cp ixp-autoinstall_conf.sh.dist ixp-autoinstall_conf.sh
-##  * vi ixp-autoinstall_conf.sh {edit settings to your needs}
+##  * cp ixpm-autoinstall_conf.sh.dist ixpm-autoinstall_conf.sh
+##  * vi ixpm-autoinstall_conf.sh {edit settings to your needs}
 ##  ++ {login to the VM through VNC or similar}
 ##  * passwd {and set root password}
 ##  * vi /etc/locale.gen {uncomment your desired locale if necessary}
@@ -81,10 +81,10 @@
 ##  ++ {now in local terminal again}
 ##  * scp ~/.ssh/id_rsa.pub root@{VM-IP-ADDRESS}:/root/.ssh/authorized_keys
 ##  * scp \
-##     {PATH-TO}/ixp-autoinstall/* {PATH-TO}/ixpmanager_{ixpshortname}_*.{sql,tar} \
+##     {PATH-TO}/ixpm-autoinstall/* {PATH-TO}/ixpmanager_{ixpshortname}_*.{sql,tar} \
 ##     root@{VM-IP-ADDRESS}:/{IMPORTING_DIR_SPECIFIED_IN_CONFIG}
 ##  * ssh root@{VM-IP-ADDRESS}
-##  * ./ixp-autoinstall.sh
+##  * ./ixpm-autoinstall.sh
 ##  * {you either have to enter mysql root password manually a few times - or
 ##     have no mysql root password during install - this is unavoidable for
 ##     security's sake for now}

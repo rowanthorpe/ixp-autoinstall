@@ -3,23 +3,23 @@
 # Copyright (C) 2013 Rowan Thorpe
 # All Rights Reserved.
 #
-# This file is part of ixp-autoinstall.
+# This file is part of ixpm-autoinstall.
 #
-# ixp-autoinstall is free software: you can redistribute it and/or modify it
+# ixpm-autoinstall is free software: you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by the Free
 # Software Foundation, version v2.0 of the License.
 #
-# ixp-autoinstall is distributed in the hope that it will be useful, but WITHOUT
+# ixpm-autoinstall is distributed in the hope that it will be useful, but WITHOUT
 # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 # FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
 # more details.
 #
 # You should have received a copy of the GNU General Public License v2.0
-# along with ixp-autoinstall. If not, see:
+# along with ixpm-autoinstall. If not, see:
 #
 # http://www.gnu.org/licenses/gpl-2.0.html
 #
-# ixp-autoinstall is for automating the install/update process for INEX's
+# ixpm-autoinstall is for automating the install/update process for INEX's
 # IXP-Manager - https://github.com/inex/IXP-Manager
 # It initially derived heavily from the manual install instructions provided there.
 
@@ -29,9 +29,9 @@
 # TODO:
 #  * get values from conf file instead of hardcoded
 #  * make portable (externalize $_d, $_e, $_null, sed_i(), mkdir_p()
-#    from ixp-autoinstall.sh and source them here and in that script)
+#    from ixpm-autoinstall.sh and source them here and in that script)
 
-# Wrapper for ixp-autoinstall to update a running installation
+# Wrapper for ixpm-autoinstall to update a running installation
 # (stopping daemons and backing up original files and db first)
 
 set -e
@@ -80,7 +80,7 @@ mysqldump -c --default-character-set=utf8 "$ixp_dbname" >"${ixp_backupdir}/ixpma
 mysql --default-character-set=utf8 -e 'drop database "$ixp_dbname"'
 
 ## update
-./ixp-autoinstall.sh \
+./ixpm-autoinstall.sh \
   --no-setup-webserver \
   --no-let-sflow-through-firewall \
   --no-start-webserver \
